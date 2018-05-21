@@ -10,7 +10,7 @@
 
 // game ends when a piece containing 2048 is reached
 
-let [canvas, frees] = createCanvas()
+let canvas = createCanvas()
 
 //Initializing game:
 function createCanvas()  {
@@ -24,18 +24,21 @@ function createCanvas()  {
   //create 4x4 canvas: 
   //var canvas = [row, row, row, row];
   //get two random tiles with twos for the start: 
-  let frees = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
   let first = getRandomInt(0,15);
   canvas[first] = 2;
-  frees.splice(first, 1);
-  let second = getRandomInt(0,14);
-  let item = frees[second];
+  let second = getRandomInt(0,15);
+
+  while (first === second) {
+    second = getRandomInt(0,15);
+  }
   canvas[second] = 2;
-  frees.splice(second, 1);
-  canvas.map((x,i) => updateNumber(i, x));
-  console.log('frees: ' + frees);
+
+  canvas.forEach((x,i) => {
+    document.querySelector('.box:nth-child('+(i+1)+')').innerText=x
+  });
+
   console.log('canvas: ' + canvas);
-  return [canvas, frees];
+  return canvas;
 
   document.querySelector['a:nth-child(2)']
 };
@@ -46,8 +49,10 @@ function getRandomInt(min, max) {
 
 //Add new item to canvas;
 function updateNumber(index, number) {
-  console.log(index, number)
+  //console.log(index, number)
+  updateCanvas(index, number);
   let i2 = index+1;
+  //canvas[index] = number;
   document.querySelector('.box:nth-child('+i2+')').innerText=number
 }
 
@@ -60,19 +65,33 @@ function checkEqual(fst, snd) {
   }
 }
 
-//Update the html elements after each move:
-function updateCanvas() {
-  document.querySelectorAll('.box').forEach(function(element, i) {
-    console.log(element);
-    element.innerText = canvas[i];
-  });
+function updateCanvas(index, number) {
+  canvas[index] = number;
 }
 
 
-function moveCanvasUp() {
+//Update the html elements after each move:
+// function updateCanvas() {
+//   document.querySelectorAll('.box').forEach(function(element, i) {
+//     console.log(element);
+//     element.innerText = canvas[i];
+//   });
+// }
+
+
+function moveCanvas(dir) {
   canvas.forEach(function (x, i) {
-    moveUp(i, x)
+    if (dir === "up" && x !== 0) {
+      moveUp(i, x);
+    } else if (dir === "down" && x !== 0) {
+      //moveDown(i,x);
+    } else if (dir === "left" && x !== 0 ) {
+      moveLeft(i,x);
+    } else if (dir == "right" && x !== 0) {
+      //moveRight(i,x);
+    }
     //don't check the upper row and don't move numbers if there are none:
+    //updateCanvas();
   });
 }
 
@@ -96,11 +115,49 @@ function moveUp(i, x) {
   }
 }
 
-
-//Generate a new number after each move:
-function generateNumber() {
-
+function moveLeft(i, x) {
+  if (canvas[i] > 0 || i%4 != 0) {
+    //Get index of upper element:
+    let li = i-1;
+    //Get the number in the upper element:
+    let left = canvas[li];
+    console.log('left', left)
+    if (left == 0) {
+      //Make the original number 0:
+      updateNumber(i, 0);
+      updateNumber(li, x);
+      moveLeft(li, x)
+    } else if (left == x) {
+      //Make the original number 0:
+      updateNumber(i, 0);
+      //The new number is x*2:
+      updateNumber(li, x*2);
+    }
+  }
 }
+
+function moveRight(i, x) {
+  if (canvas[i] > 0 || i%4 != 0) {
+    //Get index of upper element:
+    let li = i-1;
+    //Get the number in the upper element:
+    let left = canvas[li];
+    console.log('left', left)
+    if (left == 0) {
+      //Make the original number 0:
+      updateNumber(i, 0);
+      updateNumber(li, x);
+      moveLeft(li, x)
+    } else if (left == x) {
+      //Make the original number 0:
+      updateNumber(i, 0);
+      //The new number is x*2:
+      updateNumber(li, x*2);
+    }
+  }
+}
+
+
 
 //Reading keypresses:
 document.onkeydown = checkKey;
@@ -112,20 +169,23 @@ function checkKey(e) {
     if (e.keyCode == '38') {
         // up arrow
         console.log('up')
-        moveCanvasUp();
+        moveCanvas("up");
         //updateCanvas();
     }
     else if (e.keyCode == '40') {
         // down arrow
-        console.log('down')
+        //console.log('down')
+        moveCanvas("down");
     }
     else if (e.keyCode == '37') {
        // left arrow
        console.log('left')
+       moveCanvas("left");
     }
     else if (e.keyCode == '39') {
        // right arrow
-       console.log('right')
+       //console.log('right')
+       moveCanvas("right");
     }
 
 }
