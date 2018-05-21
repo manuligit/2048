@@ -19,7 +19,8 @@
     color: rgb(10, 10, 47);
     border-radius: 5px;
     padding: 20px;
-    font-size: 150%;
+    font-size: 300%;
+    font-style: center;
 }
 
 .box2 { 

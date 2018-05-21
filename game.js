@@ -70,14 +70,41 @@ function updateCanvas(index, number) {
 }
 
 
-//Update the html elements after each move:
-// function updateCanvas() {
-//   document.querySelectorAll('.box').forEach(function(element, i) {
-//     console.log(element);
-//     element.innerText = canvas[i];
-//   });
-// }
+//Add new random number to list:
+function addNew() {
+  //Choose between 2 or 4 randomly:
+  let nrs = [2,4]
+  let number = nrs[getRandomInt(0,1)];
+  //Get free numbers from canvas:
+  let frees = getFrees();
+  if (frees.length === 0) {
+    return null;
+  }
+  //Get index of a free number:
+  console.log(frees);
+  let rnd = getRandomInt(0,frees.length);
+  let newIdx = frees[rnd];
+  console.log(newIdx)
+  updateNumber(newIdx, number);
+}
 
+function getFrees() {
+  let frees = []
+  canvas.forEach(function (x,i) {
+    if (x === 0) {
+      frees.push(i);
+    } 
+  });
+  return frees;
+}
+
+//Update the html elements after each move:
+function updateCanvas2() {
+  document.querySelectorAll('.box').forEach(function(element, i) {
+    console.log(element);
+    element.innerText = canvas[i];
+  });
+}
 
 function moveCanvas(dir) {
 
@@ -98,7 +125,7 @@ function moveCanvas(dir) {
       moveRight(i,x);
     });
   }
-
+  addNew();
   // canvas.forEach(function (x, i) {
   //   if (dir === "up" && x !== 0) {
   //     moveUp(i, x);
@@ -115,7 +142,7 @@ function moveCanvas(dir) {
 }
 
 function moveUp(i, x) {
-  if (canvas[i] > 0 || i>3) {
+  if (x > 0 && i>3) {
     //Get index of upper element:
     let ui = i-4;
     //Get the number in the upper element:
@@ -135,7 +162,7 @@ function moveUp(i, x) {
 }
 
 function moveDown(i, x) {
-  if (canvas[i] > 0 || i < 12) {
+  if (x > 0 && i < 12) {
     //Get index of upper element:
     let di = i+4;
     let down = canvas[di];
@@ -155,43 +182,56 @@ function moveDown(i, x) {
 
 
 function moveLeft(i, x) {
-  if (canvas[i] > 0 || i%4 !== 0) {
+  if (x > 0 && (i%4 !== 0)) {
     //Get index of upper element:
-    let li = i-1
+    let li = i-1;
     //Get the number in the upper element:
+    console.log(canvas)
     let left = canvas[li];
     console.log('left', left)
     if (left === 0) {
       //Make the original number 0:
       updateNumber(i, 0);
       updateNumber(li, x);
-      moveLeft(li, x)
+      
+      //Don't move left if index is left of the row:
+      if (li%4 !== 0) {
+        moveLeft(li, x)
+      }
+
     } else if (left === x) {
       //Make the original number 0:
       updateNumber(i, 0);
       //The new number is x*2:
       updateNumber(li, x*2);
     }
+  }   else {
+    console.log('HEWWO UWU ', i);
   }
 }
 
 function moveRight(i, x) {
-  if (canvas[i] > 0 || i%4 !== 3) {
+  if ((x > 0) && (i%4 !== 3) && (i<15)) {
     //Get index of upper element:
     let ri = i+1;
     //Get the number in the upper element:
     let right = canvas[ri];
+    console.log('right', right, ' ri ', ri)
     if (right === 0) {
       //Make the original number 0:
       updateNumber(i, 0);
       updateNumber(ri, x);
-      moveRight(ri, x)
+      if (ri%4 !== 3) {
+        moveRight(ri, x)
+      }
     } else if (right === x) {
       //Make the original number 0:
       updateNumber(i, 0);
       //The new number is x*2:
       updateNumber(ri, x*2);
     }
+  } else {
+    console.log('HEWWO UWU ', i);
   }
 }
 
