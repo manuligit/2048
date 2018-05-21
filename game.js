@@ -10,7 +10,7 @@
 
 // game ends when a piece containing 2048 is reached
 
-createCanvas()
+let [canvas, frees] = createCanvas()
 
 //Initializing game:
 function createCanvas()  {
@@ -19,7 +19,7 @@ function createCanvas()  {
   //  4,5,6,7
   //  8,9,10,11
   //  12,13,14,15]
-  var canvas = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  let canvas = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   //var row = [0,0,0,0];
   //create 4x4 canvas: 
   //var canvas = [row, row, row, row];
@@ -35,7 +35,7 @@ function createCanvas()  {
   canvas.map((x,i) => updateNumber(i, x));
   console.log('frees: ' + frees);
   console.log('canvas: ' + canvas);
-  return canvas, frees;
+  return [canvas, frees];
 
   document.querySelector['a:nth-child(2)']
 };
@@ -44,18 +44,65 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+//Add new item to canvas;
 function updateNumber(index, number) {
   console.log(index, number)
   let i2 = index+1;
   document.querySelector('.box:nth-child('+i2+')').innerText=number
 }
 
-function randomItem() {
+//Check if the numbers are equal:
+function checkEqual(fst, snd) {
+  if (fst === snd) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+//Update the html elements after each move:
+function updateCanvas() {
+  document.querySelectorAll('.box').forEach(function(element, i) {
+    console.log(element);
+    element.innerText = canvas[i];
+  });
+}
+
+
+function moveCanvasUp() {
+  canvas.forEach(function (x, i) {
+    moveUp(i, x)
+    //don't check the upper row and don't move numbers if there are none:
+  });
+}
+
+function moveUp(i, x) {
+  if (canvas[i] > 0 || i>3) {
+    //Get index of upper element:
+    let ui = i-4;
+    //Get the number in the upper element:
+    let up = canvas[ui];
+    if (up == 0) {
+      //Make the original number 0:
+      updateNumber(i, 0);
+      updateNumber(ui, x);
+      moveUp(ui, x)
+    } else if (up == x) {
+      //Make the original number 0:
+      updateNumber(i, 0);
+      //The new number is x*2:
+      updateNumber(ui, x*2);
+    }
+  }
+}
+
+
+//Generate a new number after each move:
+function generateNumber() {
 
 }
 
 //Reading keypresses:
-
 document.onkeydown = checkKey;
 
 function checkKey(e) {
@@ -65,6 +112,8 @@ function checkKey(e) {
     if (e.keyCode == '38') {
         // up arrow
         console.log('up')
+        moveCanvasUp();
+        //updateCanvas();
     }
     else if (e.keyCode == '40') {
         // down arrow
