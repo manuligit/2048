@@ -1,53 +1,59 @@
+// logic
+// every time user clicks a button, all the items on board
+// move to that direction
+
+// each piece that lands on equal piece, combine based on 
+// the direction of the button pressed
+
+// every time a button is pressed, a new item spawns into a 
+// random free space on the map
+
+// game ends when a piece containing 2048 is reached
+
 let canvas = createCanvas()
 
 //Initializing game:
 function createCanvas()  {
   //array indexes are: 
-  // [[0,1,2,3]
-  //  [4,5,6,7]
+  // [0,1,2,3
+  //  4,5,6,7
   //  8,9,10,11
   //  12,13,14,15]
-  let canvas = [[0,0,0,0],[0,0,2,0],[0,2,0,0],[0,0,0,0]];
-  //let canvas = [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]];
+  let canvas = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  //var row = [0,0,0,0];
+  //create 4x4 canvas: 
+  //var canvas = [row, row, row, row];
+  //get two random tiles with twos for the start: 
+  let first = getRandomInt(0,15);
+  canvas[first] = 2;
+  let second = getRandomInt(0,15);
 
-
-  for(y = 0; y < 4; y++) {
-    for (x = 0; x < 4; x++) {
-      //console.log('y:' + y + " x:" + x);
-      //console.log(x+y+1)
-      //console.log(canvas[y][x])
-      document.querySelector('.box:nth-child('+((x+4*y)+1)+')').innerText=canvas[y][x]
-    }
+  while (first === second) {
+    second = getRandomInt(0,15);
   }
+  canvas[second] = 2;
 
-  //console.log('canvas: ' + canvas);
+  canvas.forEach((x,i) => {
+    document.querySelector('.box:nth-child('+(i+1)+')').innerText=x
+  });
+
+  console.log('canvas: ' + canvas);
   return canvas;
-  let help = [];
-  canvas.forEach((y,yi) => {
-    let snib = y.map((x,xi) => x===0? (xi+4*yi) : [])
-    console.log(snib);
-    help.concat(snib);
-  })
-  //document.querySelector['a:nth-child(2)']
+
+  document.querySelector['a:nth-child(2)']
 };
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-//check if single row has free items
-function checkFrees(list) {
-  let free = list.filter(x => x === 0);
-  if (free.length > 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-//Update single number to canvas:
-function updateCanvas(y, x, number) {
-  document.querySelector('.box:nth-child('+((x+4*y)+1)+')').innerText=number
+//Add new item to canvas;
+function updateNumber(index, number) {
+  //console.log(index, number)
+  updateCanvas(index, number);
+  let i2 = index+1;
+  //canvas[index] = number;
+  document.querySelector('.box:nth-child('+i2+')').innerText=number
 }
 
 //Check if the numbers are equal:
@@ -59,13 +65,21 @@ function checkEqual(fst, snd) {
   }
 }
 
+function updateCanvas(index, number) {
+  canvas[index] = number;
+}
+
+
 //Add new random number to list:
 function addNew() {
   //Choose between 2 or 4 randomly:
   let nrs = [2,4]
   let number = nrs[getRandomInt(0,1)];
   //Get free numbers from canvas:
-
+  let frees = getFrees();
+  if (frees.length === 0) {
+    return null;
+  }
   //Get index of a free number:
   console.log(frees);
   let rnd = getRandomInt(0,frees.length);
@@ -74,25 +88,26 @@ function addNew() {
   updateNumber(newIdx, number);
 }
 
-//get row: canvas.map(x => x[i])
+function getFrees() {
+  let frees = []
+  canvas.forEach(function (x,i) {
+    if (x === 0) {
+      frees.push(i);
+    } 
+  });
+  return frees;
+}
 
-// function getFrees() {
-//   let frees = []
-//   canvas.forEach(function (x,i) {
-//     if (x === 0) {
-//       frees.push(i);
-//     } 
-//   });
-//   return frees;
-// }
+//Update the html elements after each move:
+function updateCanvas2() {
+  document.querySelectorAll('.box').forEach(function(element, i) {
+    console.log(element);
+    element.innerText = canvas[i];
+  });
+}
 
 function moveCanvas(dir) {
   //todo: check if there are available moves in each direction and only run commands when there are
-  let moves = canvas.map(x=> checkFrees(x))
-  if (!moves.includes(true)) {
-    //terminate game if there are zero available moves
-    console.log('you lost the game')
-  }
 
   if (dir === "up") {
     canvas.forEach(function (x, i) { 
