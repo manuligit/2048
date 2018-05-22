@@ -107,6 +107,7 @@ function updateCanvas2() {
 }
 
 function moveCanvas(dir) {
+  //todo: check if there are available moves in each direction and only run commands when there are
 
   if (dir === "up") {
     canvas.forEach(function (x, i) { 
@@ -118,14 +119,22 @@ function moveCanvas(dir) {
     });
   } else if (dir === "left") { 
     canvas.forEach(function (x, i) {
+    //take row of items
+    //iterate them from left to right:
       moveLeft(i,x);
     });
   } else if (dir == "right") {
+    //take row of items
+    //iterate them from right to left:
     canvas.forEach(function (x, i) {
       moveRight(i,x);
     });
   }
-  addNew();
+
+
+  if (addNew() === null) {
+    console.log("YOU LOST THE GAME")
+  }
   // canvas.forEach(function (x, i) {
   //   if (dir === "up" && x !== 0) {
   //     moveUp(i, x);
