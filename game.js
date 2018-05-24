@@ -22,12 +22,12 @@ function createCanvas()  {
 
   //console.log('canvas: ' + canvas);
   return canvas;
-  let help = [];
-  canvas.forEach((y,yi) => {
-    let snib = y.map((x,xi) => x===0? (xi+4*yi) : [])
-    console.log(snib);
-    help.concat(snib);
-  })
+  // let help = [];
+  // canvas.forEach((y,yi) => {
+  //   let snib = y.map((x,xi) => x===0? (xi+4*yi) : [])
+  //   console.log(snib);
+  //   help.concat(snib);
+  // })
   //document.querySelector['a:nth-child(2)']
 };
 
