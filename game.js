@@ -98,7 +98,10 @@ function randomNew() {
 // }
 
 function checkMoves(y,x) {
-  if (y === moves[0] && x === moves[1]) {
+  if (moves.length === 0) {
+    return false;
+  }
+  if (moves.map(m => m[0] === y && m[1] === x)) {
     return true;
   } else {
     return false;
@@ -109,27 +112,30 @@ function checkMoves(y,x) {
 function moveCanvas(dir) {
   //todo: check if there are available moves in each direction and only run commands when there are
   //let moves = canvas.map(x=> checkFrees(x))
-  moves = [true];
-  if (!moves.includes(true)) {
+  //moves = [true];
+  //if (!moves.includes(true)) {
     //terminate game if there are zero available moves
-    console.log('you lost the game')
-  }
+  //  console.log('you lost the game')
+  //}
 
   if (dir === "up") {
     for (i = 1; i<4; i++) {
       canvas[i].forEach(function (x, j) {
         canvas.map(x => console.log(x))
-        moveRow(i,j,(i-1));
+        //moveRow(i,j,(i-1));
+        moveUp(i,j);
       })
       moves = [];
       console.log('')
     }
   } else if (dir === "down") {
     for (i = 2; i>=0; i--) {
+      console.log(canvas[i])
       canvas[i].forEach(function (x, j) {
         canvas.map(x => console.log(x))
         moveDown(i,j);
       })
+      moves=[];
       console.log('')
   }
   } else if (dir === "left") { 
@@ -173,11 +179,11 @@ function moveRow(y,x,z) {
           moveRow(z,x,nr)
       }
     } else if (mv === nr) {
-      if (!checkMoves(z,x)) {
+      if (checkMoves(z,x) === false) {
         console.log('AAAAAAAAAAAAAAAA', moves)
         updateCanvas(y,x,0);
         updateCanvas(z,x,(nr*2));
-        moves = [z,x];
+        moves.concat([z,x]);
       }
       }
   }
@@ -205,11 +211,12 @@ function moveRow(y,x,z) {
           //}
         }
       } else if (up === nr) {
-        if (!checkMoves((y-1),x)) {
+        console.log(moves)
+        if (checkMoves((y-1),x) === false) {
           console.log(moves)
           updateCanvas(y,x,0);
           updateCanvas((y-1),x,(nr*2));
-          moves = [(y-1),x];
+          moves.push([(y-1),x]);
         }
         }
     }
@@ -220,7 +227,7 @@ function moveRow(y,x,z) {
     //Get the number in the upper element:
     if (nr !== 0) {
       let down = canvas[(y+1)][x];
-      console.log('down', down, ' nr: ', nr, 'y: ', y, ' x: ', x);
+      //console.log('down', down, ' nr: ', nr, 'y: ', y, ' x: ', x);
       if (down === 0) {
         //Make the original number 0:
         updateCanvas(y,x,0);
@@ -231,8 +238,12 @@ function moveRow(y,x,z) {
           //}
         }
       } else if (down === nr) {
-        updateCanvas(y,x,0);
-        updateCanvas((y+1),x,(nr*2));
+        if (checkMoves((y+1),x) === false) {
+          console.log('MOEVS', moves)
+          updateCanvas(y,x,0);
+          updateCanvas((y+1),x,(nr*2));
+          moves.push([(y+1),x]);
+        }
       }
     }
   }
