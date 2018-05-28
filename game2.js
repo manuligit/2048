@@ -108,7 +108,6 @@ function updateCanvas2() {
 
 function moveCanvas(dir) {
   //todo: check if there are available moves in each direction and only run commands when there are
-
   if (dir === "up") {
     canvas.forEach(function (x, i) { 
       moveUp(i, x);

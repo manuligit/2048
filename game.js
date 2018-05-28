@@ -185,33 +185,29 @@ function move(y,x,dir) {
 
 //Reading keypresses:
 document.onkeydown = checkKey;
-
 function checkKey(e) {
-
     e = e || window.event;
-
     if (e.keyCode == '38') {
-        // up arrow
-        console.log('up')
-        moveCanvas("up");
-        //updateCanvas();
+      // up arrow
+      console.log('up')
+      moveCanvas("up");
+      //updateCanvas();
     }
     else if (e.keyCode == '40') {
-        // down arrow
-        //console.log('down')
-        moveCanvas("down");
+      // down arrow
+      //console.log('down')
+      moveCanvas("down");
     }
     else if (e.keyCode == '37') {
-       // left arrow
-       //console.log('left')
-       moveCanvas("left");
+      // left arrow
+      //console.log('left')
+      moveCanvas("left");
     }
     else if (e.keyCode == '39') {
-       // right arrow
-       //console.log('right')
-       moveCanvas("right");
+      // right arrow
+      //console.log('right')
+      moveCanvas("right");
     }
-
 }
 
 //TODO:
