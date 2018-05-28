@@ -10,10 +10,10 @@ function createCanvas()  {
   //  12,13,14,15]
   //let canvas = [[0,0,0,0],[0,0,2,0],[2,0,0,0],[0,0,0,0]];
   //let canvas = [[0,2,0,0],[0,2,0,0],[0,4,0,0],[0,0,0,0]];
-  let canvas = [[0,2,2,0],[2,2,4,2],[2,4,2,2],[0,2,2,0]];
+  //let canvas = [[0,2,2,0],[2,2,4,2],[2,4,2,2],[0,2,2,0]];
   //let canvas = [[0,0,0,0],[0,0,0,2],[0,0,0,2],[0,0,0,0]];
   
-  //let canvas = [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]];
+  let canvas = [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]];
 
 
   for(y = 0; y < 4; y++) {
@@ -133,25 +133,22 @@ function moveCanvas(dir) {
         console.log(i,",",j)
         move(i,j,dir);
       })
-      //console.log('erasing moves', moves)
-      //moves = [];
-      //console.log('')
     }
-    moves = [];
   } else if (dir === "down") {
     for (i = 2; i>=0; i--) {
       canvas[i].forEach(function (x, j) {
         //canvas.map(x => console.log(x))
+        console.log(i,",",j)
         move(i,j,dir);
       })
     }
-    moves=[];
   } else if (dir === "left") { 
     for (i = 0; i<4; i++) {
       let col = canvas.map(x => x[i])
       col.forEach(function (x, j) {
         //canvas.map(x => console.log(x))
-        moveLeft(j,i);
+        console.log(i,",",j)
+        move(i,j,dir);
       })
       console.log('')
     }
@@ -161,16 +158,19 @@ function moveCanvas(dir) {
       console.log('row:', col)
       col.forEach(function (x, j) {
         //canvas.map(x => console.log(x))
-        moveRight(j,i);
+        console.log(i,",",j)
+        move(i,j,dir);
       })
       console.log('')
     }
   }
+  moves=[];
   randomNew();
 }
 
 function move(y,x,dir) {  
   //Get the number in the upper element:
+  //console.log('mv')
   let nr = canvas[y][x];
   if (nr !== 0) {
     //calculate all variables needed for movement
@@ -186,7 +186,7 @@ function move(y,x,dir) {
       nx = x;
       ny2 = y+2;
       nx2 = x;
-      cond = (ny<4)
+      cond = (ny2<4)
     } else if (dir === 'left') {
       ny = y;
       nx = x-1;
@@ -212,11 +212,10 @@ function move(y,x,dir) {
         console.log(cond)
         console.log('move ', y, ' ', x)
         console.log(ny, ',', nx, ',', nr)
-        //check if the number is 0 so there will be no dublicate moves:
         move(ny,nx,dir)
       }
     } else if (next === nr) {
-      console.log(moves)
+      console.log('moves', moves)
       //console.log((y-1), ',',x)
       //console.log(checkMoves((y-1),x))
       if (checkMoves(ny,nx) === false) {
