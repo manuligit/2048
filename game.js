@@ -16,7 +16,7 @@ function createCanvas()  {
   //let canvas = [[0,0,0,0],[0,0,0,2],[0,0,0,2],[0,0,0,0]];
   //let canvas = [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]];
   //let canvas = [[4,128,32,4],[64,32,16,2],[32,16,4,8],[2,4,2,4]];
-
+  //let canvas = [[256,8,128,64],[16,128,64,8],[8,2,8,16],[2,8,4,2]]
   for(y = 0; y < 4; y++) {
     for (x = 0; x < 4; x++) {
       document.querySelector('.box:nth-child('+((x+4*y)+1)+')').innerText=canvas[y][x]
@@ -25,10 +25,11 @@ function createCanvas()  {
   return canvas;
 };
 
-let paired = [];
-let pairs = [];
-
+//Get all possible pairs on the field and check if they are equal
+//If there are no more free spaces left:
 function getPairs() {
+  let paired = [];
+  let pairs = [];
   for (i=0;i<4;i++) {
     for(j=0;j<4;j++) {
       //console.log(i,j)
@@ -44,16 +45,15 @@ function getPairs() {
   //check if there are any equal pairs
   paired = pairs.map(x => x[0] === x[1])
   //pairs.map(x => x[0] === x[1] ? console.log(x) : 0);
-  
+  //console.log(pairs);
   
   if (paired.includes(true)) {
-    //paired = [];
-    //pairs = [];
+    paired = [];
+    pairs = [];
+    //console.log(pairs);
     return true;
 
   } else {
-    //paired = [];
-    //pairs = [];
     return false;
   }
 }
@@ -66,6 +66,8 @@ function getRandomInt(min, max) {
 function updateCanvas(y, x, number) {
   canvas[y][x] = number;
   document.querySelector('.box:nth-child('+((x+4*y)+1)+')').innerText=number
+  //update score
+  //check win condition (if number===2048)
 }
 
 //Check if the numbers are equal:
@@ -77,9 +79,32 @@ function checkEqual(fst, snd) {
   }
 }
 
+//Gets a list of indices where the number is 0, and inserts a random number from 2 and 4 there:
+function randomNew() {
+  let indices = [];
+  if (checkZeroes()) {
+    for (i=0;i<4;i++) {
+      for(j=0;j<4;j++) {
+        if (canvas[j][i] === 0) {
+          indices.push([j,i]);
+        }
+      }
+    }
+  }
+
+  //console.log(indices)  
+  let nrs = [2,4];
+  let nr = nrs[getRandomInt(0,1)];
+  let ij = indices.length-1;
+  let ind = indices[getRandomInt(0,ij)];
+
+  updateCanvas(ind[0],ind[1],nr);
+}
+
+
 // Bad random function that calls itself until a free place is found 
 // and loops forever when the canvas is full:
-function randomNew() {
+function randomNew2() {
   //Check that there are free spaces in the field:
   if (checkZeroes()) {
     let x = getRandomInt(0,3);
@@ -102,24 +127,6 @@ function checkZeroes() {
   return (zeroes.includes(true));
 }
 
-// //Check if the canvas has moves left (equal neighbors)
-// function checkNeighbors() {
-//   //rows
-//   let check = false;
-//   for (i=0;i<3;i++) {
-//     for(j=0;j<3;j++) {
-//       //check the neighbors on left and down
-//       if ((canvas[j][i] === canvas[(j+1)][i]) || canvas[j][i] === canvas[j][(i+1)]) {
-//         check = true;
-//         //Stop looping if single match is found
-//         break;
-//       }
-//     }
-//   }
-//   //console.log('check', check)
-//   return check;
-// }
-
 //Check if move (combined two numbers) has already made during the same turn in a specific spot
 function checkMoves(y,x) {
   if (moves.length === 0) {
@@ -135,6 +142,7 @@ function checkMoves(y,x) {
   }
 }
 
+// Handle movements to every direction:
 function moveCanvas(dir) {
   //todo: check if there are available moves in each direction and only run commands when there are
   //Check direction so that the iterating starts from the correct edge:
@@ -240,6 +248,7 @@ function move(y,x,dir) {
         //console.log('MOVES UP', moves)
         updateCanvas(y,x,0);
         updateCanvas(ny,nx,(nr*2));
+
         //Add combined number to moves:
         moves.push([ny,nx]);
         //Add number to score:
@@ -249,7 +258,7 @@ function move(y,x,dir) {
   }
 }
 
-//Reading keypresses:
+//Read keypresses:
 document.onkeydown = checkKey;
 function checkKey(e) {
   if (checkZeroes() || getPairs()) { 
@@ -284,7 +293,10 @@ function checkKey(e) {
 //TODO:
 // Scorekeeping
 // Resetting game
-// Proper random generating new numbers
-// Checking for available moves (check if there are empty spaces or that 
-// moves can be made to any direction)
 // Animations for movement
+// "Fan animations"/overlay on boxes when the game is finished
+// "Victory animation"/overlay when game is won
+// Movement animation on boxes when they are moved
+// Testing/centering text in the boxes
+// Slide box to the next position and slide "new box" from the edges
+// Appearance of new random items
