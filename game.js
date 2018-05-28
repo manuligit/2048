@@ -11,6 +11,8 @@ function createCanvas()  {
   //let canvas = [[0,0,0,0],[0,0,2,0],[2,0,0,0],[0,0,0,0]];
   //let canvas = [[0,2,0,0],[0,2,0,0],[0,4,0,0],[0,0,0,0]];
   let canvas = [[0,2,2,0],[2,2,4,2],[2,4,2,2],[0,2,2,0]];
+  //let canvas = [[0,0,0,0],[0,0,0,2],[0,0,0,2],[0,0,0,0]];
+  
   //let canvas = [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]];
 
 
@@ -57,14 +59,14 @@ function checkEqual(fst, snd) {
 
 //Bad random function that calls itself until a free place is found:
 function randomNew() {
-  console.log(canvas)
+  //console.log(canvas)
   let x = getRandomInt(0,3);
   let y = getRandomInt(0,3);
   let nrs = [2,4]
   let n = nrs[getRandomInt(0,1)];
 
   if (canvas[y][x] == 0) {
-    console.log('x: ', x, ' y: ', y, ' n: ', canvas[x][y])
+    //console.log('x: ', x, ' y: ', y, ' n: ', canvas[x][y])
     updateCanvas(y,x,n)
   } else {
     randomNew()
@@ -98,10 +100,15 @@ function randomNew() {
 // }
 
 function checkMoves(y,x) {
+
   if (moves.length === 0) {
+    //console.log("no moves")
     return false;
   }
-  if (moves.map(m => m[0] === y && m[1] === x)) {
+  //check if numbers have been combined before in the spot during this turn:
+  let used = moves.map(m => m[0] === y && m[1] === x)
+  if (used.includes(true)) {
+    //console.log('incl', moves.includes([y,x]))
     return true;
   } else {
     return false;
@@ -121,23 +128,24 @@ function moveCanvas(dir) {
   if (dir === "up") {
     for (i = 1; i<4; i++) {
       canvas[i].forEach(function (x, j) {
-        canvas.map(x => console.log(x))
+        //canvas.map(x => console.log(x))
         //moveRow(i,j,(i-1));
-        moveUp(i,j);
+        console.log(i,",",j)
+        move(i,j,dir);
       })
-      moves = [];
-      console.log('')
+      //console.log('erasing moves', moves)
+      //moves = [];
+      //console.log('')
     }
+    moves = [];
   } else if (dir === "down") {
     for (i = 2; i>=0; i--) {
-      console.log(canvas[i])
       canvas[i].forEach(function (x, j) {
-        canvas.map(x => console.log(x))
-        moveDown(i,j);
+        //canvas.map(x => console.log(x))
+        move(i,j,dir);
       })
-      moves=[];
-      console.log('')
-  }
+    }
+    moves=[];
   } else if (dir === "left") { 
     for (i = 0; i<4; i++) {
       let col = canvas.map(x => x[i])
@@ -161,50 +169,82 @@ function moveCanvas(dir) {
   randomNew();
 }
 
-
-function moveRow(y,x,z) {
+function move(y,x,dir) {  
   //Get the number in the upper element:
   let nr = canvas[y][x];
-  if (nr !== 0 && z>= 0 && z < 4) {
-    //Get number of the next item:
-    let mv = canvas[z][x];
-    console.log('move', z, ' nr: ', nr, 'y: ', y, ' x: ', x);
-    if (mv === 0) {
+  if (nr !== 0) {
+    //calculate all variables needed for movement
+    let ny, nx, cond;
+    if (dir === 'up') {
+      ny = y-1;
+      nx = x;
+      ny2 = y-2;
+      nx2 = x;
+      cond = (ny>0)
+    } else if (dir === 'down') {
+      ny = y+1;
+      nx = x;
+      ny2 = y+2;
+      nx2 = x;
+      cond = (ny<4)
+    } else if (dir === 'left') {
+      ny = y;
+      nx = x-1;
+      ny2 = y;
+      nx2 = x-2;
+      cond = (nx>0)
+    } else if (dir === 'right') {
+      ny = y;
+      nx = x+1;
+      ny2 = y;
+      nx2 = x+2;
+      cond = (nx<4)
+    }
+
+    let next = canvas[ny][nx];
+    console.log(next)
+    if (next === 0) {
       //Make the original number 0:
       updateCanvas(y,x,0);
-      updateCanvas(z,x,nr);
-      //Continue moving up if not in the upper row:
-
-      if (z>= 0 && z < 4) {
-          moveRow(z,x,nr)
+      updateCanvas(ny,nx,nr);
+      //Continue moving if not in the edge:
+      if (cond) {
+        console.log(cond)
+        console.log('move ', y, ' ', x)
+        console.log(ny, ',', nx, ',', nr)
+        //check if the number is 0 so there will be no dublicate moves:
+        move(ny,nx,dir)
       }
-    } else if (mv === nr) {
-      if (checkMoves(z,x) === false) {
-        console.log('AAAAAAAAAAAAAAAA', moves)
+    } else if (next === nr) {
+      console.log(moves)
+      //console.log((y-1), ',',x)
+      //console.log(checkMoves((y-1),x))
+      if (checkMoves(ny,nx) === false) {
+        //console.log('MOVES UP', moves)
         updateCanvas(y,x,0);
-        updateCanvas(z,x,(nr*2));
-        moves.concat([z,x]);
+        updateCanvas(ny,nx,(nr*2));
+        //console.log('mobes push',(y-1), ' ',x)
+        moves.push([ny,nx]);
       }
-      }
+    }
   }
 }
-
-
-
 
   function moveUp(y,x) {
     //Get the number in the upper element:
     let nr = canvas[y][x];
     if (nr !== 0) {
       let up = canvas[(y-1)][x];
-      console.log('up', up, ' nr: ', nr, 'y: ', y, ' x: ', x);
+      //console.log('up', up, ' nr: ', nr, 'y: ', y, ' x: ', x);
       if (up === 0) {
         //Make the original number 0:
+        console.log('move up ', y, ',', x)
         updateCanvas(y,x,0);
         updateCanvas((y-1),x,nr);
         //Continue moving up if not in the upper row:
 
         if ((y-2)>=0) {
+          //console.log('move up ', y, ' ', x)
           //check if the number is 0 so there will be no dublicate moves:
           //if (canvas[(y-2)][x] === 0) {
             moveUp((y-1),x,nr)
@@ -212,10 +252,13 @@ function moveRow(y,x,z) {
         }
       } else if (up === nr) {
         console.log(moves)
+        console.log((y-1), ',',x)
+        console.log(checkMoves((y-1),x))
         if (checkMoves((y-1),x) === false) {
-          console.log(moves)
+          //console.log('MOVES UP', moves)
           updateCanvas(y,x,0);
           updateCanvas((y-1),x,(nr*2));
+          //console.log('mobes push',(y-1), ' ',x)
           moves.push([(y-1),x]);
         }
         }
