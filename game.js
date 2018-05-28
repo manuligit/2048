@@ -8,14 +8,14 @@ function createCanvas()  {
   // [[0,1,2,3]
   //  [4,5,6,7]
   //  8,9,10,11
-  //  12,13,14,15]
+  //  12,13,14,15]]
   //Canvas templates for testing:
   let canvas = [[0,0,0,0],[0,0,2,0],[2,0,0,0],[0,0,0,0]];
   //let canvas = [[0,2,0,0],[0,2,0,0],[0,4,0,0],[0,0,0,0]];
   //let canvas = [[0,2,2,0],[2,2,4,2],[2,4,2,2],[0,2,2,0]];
   //let canvas = [[0,0,0,0],[0,0,0,2],[0,0,0,2],[0,0,0,0]];
   //let canvas = [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]];
-
+  //let canvas = [[4,128,32,4],[64,32,16,2],[32,16,4,8],[2,4,2,4]];
 
   for(y = 0; y < 4; y++) {
     for (x = 0; x < 4; x++) {
@@ -24,6 +24,39 @@ function createCanvas()  {
   }
   return canvas;
 };
+
+let paired = [];
+let pairs = [];
+
+function getPairs() {
+  for (i=0;i<4;i++) {
+    for(j=0;j<4;j++) {
+      //console.log(i,j)
+      if (i+1<canvas.length) {
+        pairs.push([canvas[j][i],canvas[j][i+1]]);
+      }
+      if (j+1<canvas.length) {
+        pairs.push([canvas[j][i],canvas[j+1][i]]);
+      }
+    }
+  }
+  console.log('check')
+  //check if there are any equal pairs
+  paired = pairs.map(x => x[0] === x[1])
+  //pairs.map(x => x[0] === x[1] ? console.log(x) : 0);
+  
+  
+  if (paired.includes(true)) {
+    //paired = [];
+    //pairs = [];
+    return true;
+
+  } else {
+    //paired = [];
+    //pairs = [];
+    return false;
+  }
+}
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -42,11 +75,6 @@ function checkEqual(fst, snd) {
   } else {
     return false;
   }
-}
-
-//Transform canvas to simple array for checks:
-function canvasToArray() {
-  console.log(snib)
 }
 
 // Bad random function that calls itself until a free place is found 
@@ -74,23 +102,23 @@ function checkZeroes() {
   return (zeroes.includes(true));
 }
 
-//Check if the canvas has moves left (equal neighbors)
-function checkNeighbors() {
-  //rows
-  let check = false;
-  for (i=0;i<3;i++) {
-    for(j=0;j<3;j++) {
-      //check the neighbors on left and down
-      if ((canvas[j][i] === canvas[(j+1)][i]) || canvas[j][i] === canvas[j][(i+1)]) {
-        check = true;
-        //Stop looping if single match is found
-        break;
-      }
-    }
-  }
-  console.log('check', check)
-  return check;
-}
+// //Check if the canvas has moves left (equal neighbors)
+// function checkNeighbors() {
+//   //rows
+//   let check = false;
+//   for (i=0;i<3;i++) {
+//     for(j=0;j<3;j++) {
+//       //check the neighbors on left and down
+//       if ((canvas[j][i] === canvas[(j+1)][i]) || canvas[j][i] === canvas[j][(i+1)]) {
+//         check = true;
+//         //Stop looping if single match is found
+//         break;
+//       }
+//     }
+//   }
+//   //console.log('check', check)
+//   return check;
+// }
 
 //Check if move (combined two numbers) has already made during the same turn in a specific spot
 function checkMoves(y,x) {
@@ -110,12 +138,14 @@ function checkMoves(y,x) {
 function moveCanvas(dir) {
   //todo: check if there are available moves in each direction and only run commands when there are
   //Check direction so that the iterating starts from the correct edge:
+  canvasBefore = JSON.stringify(canvas);
+
   if (dir === "up") {
     for (i = 1; i<4; i++) {
       canvas[i].forEach(function (x, j) {
         //canvas.map(x => console.log(x))
         //moveRow(i,j,(i-1));
-        console.log(i,",",j)
+        //console.log(i,",",j)
         move(i,j,dir);
       })
     }
@@ -123,7 +153,7 @@ function moveCanvas(dir) {
     for (i = 2; i>=0; i--) {
       canvas[i].forEach(function (x, j) {
         //canvas.map(x => console.log(x))
-        console.log(i,",",j)
+        //console.log(i,",",j)
         move(i,j,dir);
       })
     }
@@ -135,22 +165,26 @@ function moveCanvas(dir) {
         //console.log(j,",",i)
         move(j,i,dir);
       })
-      console.log('')
+      //console.log('')
     }
   } else if (dir == "right") {
     for (i = 3; i>=0; i--) {
       let col = canvas.map(x => x[i])
-      console.log('row:', col)
+      //console.log('row:', col)
       col.forEach(function (x, j) {
         //canvas.map(x => console.log(x))
         //console.log(j,",",i)
         move(j,i,dir);
       })
-      console.log('')
+      //console.log('')
     }
   }
   moves=[];
-  randomNew();
+  
+  //Only add new moves 
+  if (canvasBefore !== JSON.stringify(canvas)) {
+    randomNew();
+  }
 }
 
 function move(y,x,dir) {  
@@ -186,7 +220,7 @@ function move(y,x,dir) {
     }
 
     let next = canvas[ny][nx];
-    console.log(next)
+    //console.log(next)
     if (next === 0) {
       //Replace the original number with 0:
       updateCanvas(y,x,0);
@@ -218,11 +252,11 @@ function move(y,x,dir) {
 //Reading keypresses:
 document.onkeydown = checkKey;
 function checkKey(e) {
-  if (checkZeroes() || checkNeighbors()) { 
+  if (checkZeroes() || getPairs()) { 
     e = e || window.event;
     if (e.keyCode == '38') {
       // up arrow
-      console.log('up')
+      //console.log('up')
       moveCanvas("up");
       //updateCanvas();
     }
