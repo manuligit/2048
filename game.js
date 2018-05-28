@@ -9,11 +9,11 @@ function createCanvas()  {
   //  [4,5,6,7]
   //  8,9,10,11
   //  12,13,14,15]
-  //let canvas = [[0,0,0,0],[0,0,2,0],[2,0,0,0],[0,0,0,0]];
+  //Canvas templates for testing:
+  let canvas = [[0,0,0,0],[0,0,2,0],[2,0,0,0],[0,0,0,0]];
   //let canvas = [[0,2,0,0],[0,2,0,0],[0,4,0,0],[0,0,0,0]];
-  let canvas = [[0,2,2,0],[2,2,4,2],[2,4,2,2],[0,2,2,0]];
+  //let canvas = [[0,2,2,0],[2,2,4,2],[2,4,2,2],[0,2,2,0]];
   //let canvas = [[0,0,0,0],[0,0,0,2],[0,0,0,2],[0,0,0,0]];
-  
   //let canvas = [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]];
 
 
@@ -22,7 +22,6 @@ function createCanvas()  {
       document.querySelector('.box:nth-child('+((x+4*y)+1)+')').innerText=canvas[y][x]
     }
   }
-
   return canvas;
 };
 
@@ -30,22 +29,9 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-//check if single row has free items
-// function checkFrees(list) {
-//   let free = list.map(re => re.filter(x => (x === 0)));
-//   //let free = list.filter(x => x === 0);
-//   //let freeCanvas = list.map(r => r.filter((x,i) => {if (x === 0) { i }}));
-//   if (free.length > 0) {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
-
 //Update single number to canvas:
 function updateCanvas(y, x, number) {
   canvas[y][x] = number;
-  //console.log(number, ' ', canvas[x][y])
   document.querySelector('.box:nth-child('+((x+4*y)+1)+')').innerText=number
 }
 
@@ -58,9 +44,9 @@ function checkEqual(fst, snd) {
   }
 }
 
-//Bad random function that calls itself until a free place is found:
+// Bad random function that calls itself until a free place is found 
+// and loops forever when the canvas is full:
 function randomNew() {
-  //console.log(canvas)
   let x = getRandomInt(0,3);
   let y = getRandomInt(0,3);
   let nrs = [2,4]
@@ -74,34 +60,7 @@ function randomNew() {
   }
 }
 
-//Add new random number to list:
-// function addNew() {
-//   //Choose between 2 or 4 randomly:
-//   let nrs = [2,4]
-//   let number = nrs[getRandomInt(0,1)];
-//   //Get free numbers from canvas:
-
-//   //Get index of a free number:
-//   //let rnd = getRandomInt(0,frees.length);
-//   //let newIdx = frees[rnd];
-//   console.log(newIdx)
-//   updateNumber(newIdx, number);
-// }
-
-//get row: canvas.map(x => x[i])
-
-// function getFrees() {
-//   let frees = []
-//   canvas.forEach(function (x,i) {
-//     if (x === 0) {
-//       frees.push(i);
-//     } 
-//   });
-//   return frees;
-// }
-
 function checkMoves(y,x) {
-
   if (moves.length === 0) {
     //console.log("no moves")
     return false;
@@ -254,3 +213,11 @@ function checkKey(e) {
     }
 
 }
+
+//TODO:
+// Scorekeeping
+// Resetting game
+// Proper random generating new numbers
+// Checking for available moves (check if there are empty spaces or that 
+// moves can be made to any direction)
+// Animations for movement
