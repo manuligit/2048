@@ -1,5 +1,6 @@
 let canvas = createCanvas()
 let moves = [];
+let score = 0;
 
 //Initializing game:
 function createCanvas()  {
@@ -10,10 +11,10 @@ function createCanvas()  {
   //  12,13,14,15]
   //let canvas = [[0,0,0,0],[0,0,2,0],[2,0,0,0],[0,0,0,0]];
   //let canvas = [[0,2,0,0],[0,2,0,0],[0,4,0,0],[0,0,0,0]];
-  //let canvas = [[0,2,2,0],[2,2,4,2],[2,4,2,2],[0,2,2,0]];
+  let canvas = [[0,2,2,0],[2,2,4,2],[2,4,2,2],[0,2,2,0]];
   //let canvas = [[0,0,0,0],[0,0,0,2],[0,0,0,2],[0,0,0,0]];
   
-  let canvas = [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]];
+  //let canvas = [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]];
 
 
   for(y = 0; y < 4; y++) {
@@ -115,16 +116,9 @@ function checkMoves(y,x) {
   }
 }
 
-
 function moveCanvas(dir) {
   //todo: check if there are available moves in each direction and only run commands when there are
-  //let moves = canvas.map(x=> checkFrees(x))
-  //moves = [true];
-  //if (!moves.includes(true)) {
-    //terminate game if there are zero available moves
-  //  console.log('you lost the game')
-  //}
-
+  //Check direction so that the iterating starts from the correct edge:
   if (dir === "up") {
     for (i = 1; i<4; i++) {
       canvas[i].forEach(function (x, j) {
@@ -147,8 +141,8 @@ function moveCanvas(dir) {
       let col = canvas.map(x => x[i])
       col.forEach(function (x, j) {
         //canvas.map(x => console.log(x))
-        console.log(i,",",j)
-        move(i,j,dir);
+        //console.log(j,",",i)
+        move(j,i,dir);
       })
       console.log('')
     }
@@ -158,8 +152,8 @@ function moveCanvas(dir) {
       console.log('row:', col)
       col.forEach(function (x, j) {
         //canvas.map(x => console.log(x))
-        console.log(i,",",j)
-        move(i,j,dir);
+        //console.log(j,",",i)
+        move(j,i,dir);
       })
       console.log('')
     }
@@ -170,10 +164,9 @@ function moveCanvas(dir) {
 
 function move(y,x,dir) {  
   //Get the number in the upper element:
-  //console.log('mv')
   let nr = canvas[y][x];
   if (nr !== 0) {
-    //calculate all variables needed for movement
+    //Calculate all variables needed for movement
     let ny, nx, cond;
     if (dir === 'up') {
       ny = y-1;
@@ -204,138 +197,32 @@ function move(y,x,dir) {
     let next = canvas[ny][nx];
     console.log(next)
     if (next === 0) {
-      //Make the original number 0:
+      //Replace the original number with 0:
       updateCanvas(y,x,0);
       updateCanvas(ny,nx,nr);
-      //Continue moving if not in the edge:
+      //Continue moving if not on the edge:
       if (cond) {
-        console.log(cond)
-        console.log('move ', y, ' ', x)
-        console.log(ny, ',', nx, ',', nr)
+        //console.log(cond)
+        //console.log('move ', y, ' ', x)
+        //console.log(ny, ',', nx, ',', nr)
         move(ny,nx,dir)
       }
     } else if (next === nr) {
-      console.log('moves', moves)
+      //console.log('moves', moves)
       //console.log((y-1), ',',x)
       //console.log(checkMoves((y-1),x))
       if (checkMoves(ny,nx) === false) {
         //console.log('MOVES UP', moves)
         updateCanvas(y,x,0);
         updateCanvas(ny,nx,(nr*2));
-        //console.log('mobes push',(y-1), ' ',x)
+        //Add combined number to moves:
         moves.push([ny,nx]);
+        //Add number to score:
+        score = score + (nr*2);
       }
     }
   }
 }
-
-  function moveUp(y,x) {
-    //Get the number in the upper element:
-    let nr = canvas[y][x];
-    if (nr !== 0) {
-      let up = canvas[(y-1)][x];
-      //console.log('up', up, ' nr: ', nr, 'y: ', y, ' x: ', x);
-      if (up === 0) {
-        //Make the original number 0:
-        console.log('move up ', y, ',', x)
-        updateCanvas(y,x,0);
-        updateCanvas((y-1),x,nr);
-        //Continue moving up if not in the upper row:
-
-        if ((y-2)>=0) {
-          //console.log('move up ', y, ' ', x)
-          //check if the number is 0 so there will be no dublicate moves:
-          //if (canvas[(y-2)][x] === 0) {
-            moveUp((y-1),x,nr)
-          //}
-        }
-      } else if (up === nr) {
-        console.log(moves)
-        console.log((y-1), ',',x)
-        console.log(checkMoves((y-1),x))
-        if (checkMoves((y-1),x) === false) {
-          //console.log('MOVES UP', moves)
-          updateCanvas(y,x,0);
-          updateCanvas((y-1),x,(nr*2));
-          //console.log('mobes push',(y-1), ' ',x)
-          moves.push([(y-1),x]);
-        }
-        }
-    }
-  }
-
-  function moveDown(y,x) {
-    let nr = canvas[y][x];
-    //Get the number in the upper element:
-    if (nr !== 0) {
-      let down = canvas[(y+1)][x];
-      //console.log('down', down, ' nr: ', nr, 'y: ', y, ' x: ', x);
-      if (down === 0) {
-        //Make the original number 0:
-        updateCanvas(y,x,0);
-        updateCanvas((y+1),x,nr);
-        if ((y+2)<=3) {
-          //if (canvas[(y+2)][x] === 0) {
-            moveDown((y+1),x,nr)
-          //}
-        }
-      } else if (down === nr) {
-        if (checkMoves((y+1),x) === false) {
-          console.log('MOEVS', moves)
-          updateCanvas(y,x,0);
-          updateCanvas((y+1),x,(nr*2));
-          moves.push([(y+1),x]);
-        }
-      }
-    }
-  }
-
-  function moveLeft(y,x) {
-    let nr = canvas[y][x];
-    //Get the number in the upper element:
-    if (nr !== 0) {
-      let left = canvas[y][x-1];
-      console.log('left', left, ' nr: ', nr, 'y: ', y, ' x: ', x);
-      if (left === 0) {
-        //Make the original number 0:
-        updateCanvas(y,x,0);
-        updateCanvas(y,(x-1),nr);
-        canvas.map(x => console.log(x))
-        if ((x-2)>=0) {
-          //if (canvas[y][(x-2)] === 0) {
-            moveLeft(y,(x-1),nr)
-          //}
-        }
-      } else if (left === nr) {
-        updateCanvas(y,x,0);
-        updateCanvas(y,(x-1),(nr*2));
-      }
-    }
-  }
-
-
-  function moveRight(y,x) {
-    let nr = canvas[y][x];
-    //Get the number in the upper element:
-    if (nr !== 0) {
-      let right = canvas[y][x+1];
-      //console.log('right', right, ' nr: ', nr, 'y: ', y, ' x: ', x);
-      if (right === 0) {
-        //Make the original number 0:
-        updateCanvas(y,x,0);
-        updateCanvas(y,(x+1),nr);
-        //canvas.map(x => console.log(x))
-        if ((x+2)<=3) {
-          //if (canvas[y][(x+2)] === 0) {
-            moveRight(y,(x+1),nr)
-          //}
-        }
-      } else if (right === nr) {
-        updateCanvas(y,x,0);
-        updateCanvas(y,(x+1),(nr*2));
-      }
-    }
-  }
 
 //Reading keypresses:
 document.onkeydown = checkKey;
