@@ -44,25 +44,57 @@ function checkEqual(fst, snd) {
   }
 }
 
+//Transform canvas to simple array for checks:
+function canvasToArray() {
+  console.log(snib)
+}
+
 // Bad random function that calls itself until a free place is found 
 // and loops forever when the canvas is full:
 function randomNew() {
-  let x = getRandomInt(0,3);
-  let y = getRandomInt(0,3);
-  let nrs = [2,4]
-  let n = nrs[getRandomInt(0,1)];
+  //Check that there are free spaces in the field:
+  if (checkZeroes()) {
+    let x = getRandomInt(0,3);
+    let y = getRandomInt(0,3);
+    let nrs = [2,4];
+    let n = nrs[getRandomInt(0,1)];
 
-  if (canvas[y][x] == 0) {
-    //console.log('x: ', x, ' y: ', y, ' n: ', canvas[x][y])
-    updateCanvas(y,x,n)
-  } else {
-    randomNew()
+    if (canvas[y][x] == 0) {
+      //console.log('x: ', x, ' y: ', y, ' n: ', canvas[x][y])
+      updateCanvas(y,x,n);
+    } else {
+      randomNew();
+    }
   }
 }
 
+//Check if canvas has free spaces left
+function checkZeroes() {
+  let zeroes = canvas.map(x => x.includes(0));
+  return (zeroes.includes(true));
+}
+
+//Check if the canvas has moves left (equal neighbors)
+function checkNeighbors() {
+  //rows
+  let check = false;
+  for (i=0;i<3;i++) {
+    for(j=0;j<3;j++) {
+      //check the neighbors on left and down
+      if ((canvas[j][i] === canvas[(j+1)][i]) || canvas[j][i] === canvas[j][(i+1)]) {
+        check = true;
+        //Stop looping if single match is found
+        break;
+      }
+    }
+  }
+  console.log('check', check)
+  return check;
+}
+
+//Check if move (combined two numbers) has already made during the same turn in a specific spot
 function checkMoves(y,x) {
   if (moves.length === 0) {
-    //console.log("no moves")
     return false;
   }
   //check if numbers have been combined before in the spot during this turn:
@@ -186,6 +218,7 @@ function move(y,x,dir) {
 //Reading keypresses:
 document.onkeydown = checkKey;
 function checkKey(e) {
+  if (checkZeroes() || checkNeighbors()) { 
     e = e || window.event;
     if (e.keyCode == '38') {
       // up arrow
@@ -208,6 +241,10 @@ function checkKey(e) {
       //console.log('right')
       moveCanvas("right");
     }
+  } else {
+    //check if there are elements that can be 
+    document.querySelector('h1').innerText="You lost the game";
+  }
 }
 
 //TODO:
