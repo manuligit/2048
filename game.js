@@ -12,6 +12,7 @@ function createCanvas()  {
   //  12,13,14,15]]
   //Canvas templates for testing:
   let canvas = [[0,0,0,0],[0,0,2,0],[2,0,0,0],[0,0,0,0]];
+  let score = 0;
   //let canvas = [[0,2,0,0],[0,2,0,0],[0,4,0,0],[0,0,0,0]];
   //let canvas = [[0,2,2,0],[2,2,4,2],[2,4,2,2],[0,2,2,0]];
   //let canvas = [[0,0,0,0],[0,0,0,2],[0,0,0,2],[0,0,0,0]];
@@ -23,6 +24,8 @@ function createCanvas()  {
       document.querySelector('.box:nth-child('+((x+4*y)+1)+')').innerText=canvas[y][x]
     }
   }
+
+  document.querySelector('.score').innerText=score;
   return canvas;
 };
 
@@ -315,7 +318,7 @@ function reset() {
 }
 
 //TODO:
-// Scorekeeping
+// Scorekeeping: displaying hiscore on first start
 // Resetting game
 // Animations for movement
 // "Fan animations"/overlay on boxes when the game is finished

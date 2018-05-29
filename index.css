@@ -1,6 +1,7 @@
 * { 
     padding: 0; 
     margin: 0; 
+    font-family: 'Titillium Web', sans-serif;
 }
 
 .wrapper {
@@ -40,12 +41,12 @@
     position: fixed;
     display: none;
     width: 470px;
-    height: 445px;
+    height: 610px;
     top: 0; 
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.8);
+    background: linear-gradient(to bottom, rgba(0,0,0,1), rgba(59, 59, 3, 0.5));
 }
 
 .scores {
@@ -61,11 +62,10 @@
 
 .sbox {
     background: linear-gradient(to bottom,rgb(248, 229, 229), #fcfcb3);
-    color: rgb(10, 10, 47);
+    color: pink;
     border-radius: 5px;
     padding: 20px;
-    font: pink;
-    font-size: 300%;
+    font-size: 130%;
     font-style: center;
 }
 
