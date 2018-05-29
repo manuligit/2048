@@ -8,6 +8,10 @@
   <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
+  <h1></h1>
+  <div class="overlay">YOU LOST THE GAME reset?
+      <input id="clickMe" type="button" value="Reset?" onclick="reset();" />
+  </div>  
   <div class="wrapper">
       <div class="box">1</div>
       <div class="box">2</div>
@@ -25,6 +29,14 @@
       <div class="box">14</div>
       <div class="box">15</div>
       <div class="box">16</div>
+  </div>
+  <div class="scores">
+    <div class="sbox"> Score
+      <div class="score"></div>
+    </div>
+    <div class="sbox">High score
+        <div class="score"></div>
+      </div>
   </div>
   <script src="./game.js"></script>
 </body>

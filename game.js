@@ -1,6 +1,7 @@
 let canvas = createCanvas()
 let moves = [];
 let score = 0;
+let hiscore = 0;
 
 //Initializing game:
 function createCanvas()  {
@@ -48,6 +49,7 @@ function getPairs() {
   //console.log(pairs);
   
   if (paired.includes(true)) {
+    console.log('pairs!!')
     paired = [];
     pairs = [];
     //console.log(pairs);
@@ -65,7 +67,11 @@ function getRandomInt(min, max) {
 //Update single number to canvas:
 function updateCanvas(y, x, number) {
   canvas[y][x] = number;
-  document.querySelector('.box:nth-child('+((x+4*y)+1)+')').innerText=number
+  document.querySelector('.box:nth-child('+((x+4*y)+1)+')').innerText=number;
+  document.querySelector('.score').innerText=score;
+  document.querySelector('.hiscore').innerText=hiscore;
+  //document.querySelector('.box:nth-child('+((x+4*y)+1)+')').classList.add("left");
+  //document.querySelector('.box:nth-child('+((x+4*y)+1)+')').classList.remove("left");
   //update score
   //check win condition (if number===2048)
 }
@@ -253,6 +259,10 @@ function move(y,x,dir) {
         moves.push([ny,nx]);
         //Add number to score:
         score = score + (nr*2);
+        //update highscore if score now is bigger:
+        if (score > hiscore) {
+          hiscore = score;
+        }
       }
     }
   }
@@ -286,8 +296,22 @@ function checkKey(e) {
     }
   } else {
     //check if there are elements that can be 
-    document.querySelector('h1').innerText="You lost the game";
+    lose();
+    //document.querySelector('h1').innerText="You lost the game";
   }
+}
+
+function lose() {
+  //display score in overlay
+  //display reset button in overlay
+  document.querySelector('.overlay').style.display = "block";
+}
+
+function reset() {
+  score = 0;
+  //don't override high score
+  canvas = createCanvas();
+  document.querySelector('.overlay').style.display = "none";
 }
 
 //TODO:
