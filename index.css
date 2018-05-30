@@ -1,11 +1,22 @@
+/*:root {
+    --main-color: rgb(252,179,252);
+    --main-accent: rgb(252,252,179);
+    --main-gradientb: rgba(0,0,0,1);
+    --main-gradient: rgba(179,252,252,0.3);
+    --main-text: rgb(52, 13, 76);
+    --box-bg: rgb(179,252,252);
+    --score-text: #fd96fd;
+}
+*/
+
 :root {
     --main-color: rgb(255,192,203);
     --main-accent: rgb(252,252,179);
     --main-gradientb: rgba(0,0,0,1);
     --main-gradient: rgba(59, 59, 3, 0.5);
-    --main-text: rgb(52, 13, 76);
+    --main-text: rgba(52, 13, 76,0.8);
     --box-bg: rgb(242, 233, 233);
-    --score-text: #fd96fd;
+    --score-text:rgba(52, 13, 76,0.8);
 }
 
 * { 
@@ -40,18 +51,29 @@
     transform: rotate(-36deg);
 }
 
-/*
-.box2 { 
-    background-color: rgb(158, 143, 143);
-    color: rgb(10, 10, 47);
-    border-radius: 5px;
-    padding: 20px;
-    font-size: 150%;
+.btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 10px;
+    transform: translateX(-50%) translateY(-50%);
+    font-size: 230%;
+    background: rgba(255,192,203,0.8); 
+    color: white;
 }
-*/
+
+.btn:hover {
+    color: white;
+    background: transparent;
+    /*
+    transition: transform 1s ease-in-out; 
+    transform: scale(1.5);
+    transform-origin: right;
+    */
+}
 
 .overlay {
-    position: fixed;
+    position: absolute;
     display: none;
     width: 470px;
     height: 610px;
@@ -83,21 +105,3 @@
 }
 
 @keyframes moveLeft { from { margin-left: -20%; } to { margin-left: 100%; }  }
-
-
-/*
-.box:nth-child(even) {
-    background-color: #ccc;
-    color: #000;
-}
-
-.row1 {
-    height: 100px;
-}
-
-[class^="col"] {
-    height: 100px;
-    background: pink;
-    grid-row: 1;
-}
-*/

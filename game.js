@@ -26,6 +26,7 @@ function createCanvas()  {
   }
 
   document.querySelector('.score').innerText=score;
+  //document.querySelector('.hiscore').innerText=(hiscore || 0);
   return canvas;
 };
 
